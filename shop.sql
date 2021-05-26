@@ -1,43 +1,42 @@
 DROP TABLE IF EXISTS catalogs;
 CREATE TABLE catalogs (
-	id INT UNSIGNED NOT NULL,
+	id SERIAL PRIMARY KEY,
 	name VARCHAR(255) COMMENT 'Название раздела'
 ) COMMENT = 'Разделы интернет-магазина';
 
 DROP TABLE IF EXISTS users;
 CREATE TABLE users (
-	id INT UNSIGNED NOT NULL,
+	id SERIAL PRIMARY KEY,
 	name VARCHAR(255) COMMENT 'Имя покупателя',
 	birthday_at DATE COMMENT 'День рождения',
 	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 	updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) COMMENT = 'Покупатели';
 
-INSERT INTO users (id, name, birthday_at) VALUES (1, 'Ivan', '1997-06-16');
-SELECT * FROM users;
-
 DROP TABLE IF EXISTS products;
 CREATE TABLE products (
-	id INT UNSIGNED NOT NULL,
+	id SERIAL PRIMARY KEY,
 	name VARCHAR(255) COMMENT 'Название',
 	description TEXT COMMENT 'Описание',
 	price DECIMAL (11,2) COMMENT 'Цена',
 	catalog_id INT UNSIGNED,
 	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-	updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+	updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	KEY index_of_catalog_id (catalog_id)
 ) COMMENT = 'Товарные позиции';
 
 DROP TABLE IF EXISTS orders;
 CREATE TABLE orders (
-	id INT UNSIGNED NOT NULL,
+	id SERIAL PRIMARY KEY,
 	user_id INT UNSIGNED,
 	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-	updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+	updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	KEY index_of_user_id (user_id)
 ) COMMENT = 'Заказы';
 
 DROP TABLE IF EXISTS orders_products;
 CREATE TABLE orders_products (
-	id INT UNSIGNED NOT NULL,
+	id SERIAL PRIMARY KEY,
 	order_id INT UNSIGNED,
 	product_id INT UNSIGNED,
 	total INT UNSIGNED DEFAULT 1 COMMENT 'Кол-во заказанных товарных позицый',
@@ -47,19 +46,21 @@ CREATE TABLE orders_products (
 
 DROP TABLE IF EXISTS discounts;
 CREATE TABLE discounts (
-	id INT UNSIGNED NOT NULL,
+	id SERIAL PRIMARY KEY,
 	user_id INT UNSIGNED,
 	product_id INT UNSIGNED,
 	discount FLOAT UNSIGNED COMMENT 'Величина скидки от 0.0 до 1.0',
 	started_at DATETIME,
 	finished_at DATETIME,
 	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-	updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+	updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	KEY index_of_user_id (user_id),
+	KEY index_of_product_id (product_id)
 ) COMMENT = 'Скидки';
 
 DROP TABLE IF EXISTS storehouses;
 CREATE TABLE storehouses (
-	id INT UNSIGNED NOT NULL,
+	id SERIAL PRIMARY KEY,
 	name VARCHAR(255) COMMENT 'Название',
 	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 	updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -67,7 +68,7 @@ CREATE TABLE storehouses (
 
 DROP TABLE IF EXISTS storehouses_products;
 CREATE TABLE storehouses_products (
-	id INT UNSIGNED NOT NULL,
+	id SERIAL PRIMARY KEY,
 	storehouse_id INT UNSIGNED,
 	product_id INT UNSIGNED,
 	value INT UNSIGNED COMMENT 'Запасы товарной позиции на складе',
