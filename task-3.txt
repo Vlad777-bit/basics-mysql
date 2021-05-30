@@ -1,0 +1,12 @@
+1) Откройте терминал для создания mysqldump
+
+mysqldump example > example.sql
+
+2) Откройте консоль mysql для создания базы данных
+
+DROP DATABASE IF EXISTS sample;
+CREATE DATABASE sample;
+
+1) Откройте терминал для переноса данных из example.sql в базу данных sample
+
+mysql sample < example.sql
