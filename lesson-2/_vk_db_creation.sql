@@ -4,7 +4,7 @@ USE vk;
 
 DROP TABLE IF EXISTS users;
 CREATE TABLE users (
-	id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, 
+	id SERIAL PRIMARY KEY, -- Переписываем BIGINT UNSIGNED NOT NULL AUTO_INCREMENT на SERIAL 
     firstname VARCHAR(50),
     lastname VARCHAR(50) COMMENT 'Фамилия', -- COMMENT на случай, если имя неочевидное
     email VARCHAR(120) UNIQUE,
@@ -16,7 +16,7 @@ CREATE TABLE users (
 
 DROP TABLE IF EXISTS `profiles`;
 CREATE TABLE `profiles` (
-	user_id BIGINT UNSIGNED NOT NULL UNIQUE,
+	user_id SERIAL, -- Делаем тоже самое что и в таблице users
     gender CHAR(1),
     birthday DATE,
 	photo_id BIGINT UNSIGNED NULL,
@@ -59,8 +59,8 @@ CREATE TABLE friend_requests (
     -- CHECK (initiator_user_id <> target_user_id)
 );
 -- чтобы пользователь сам себе не отправил запрос в друзья
-ALTER TABLE friend_requests 
-ADD CHECK(initiator_user_id <> target_user_id);
+-- ALTER TABLE friend_requests 
+-- ADD CHECK(initiator_user_id <> target_user_id);
 
 DROP TABLE IF EXISTS communities;
 CREATE TABLE communities(
@@ -112,7 +112,8 @@ CREATE TABLE likes(
 	id SERIAL,
     user_id BIGINT UNSIGNED NOT NULL,
     media_id BIGINT UNSIGNED NOT NULL,
-    created_at DATETIME DEFAULT NOW()
+    created_at DATETIME DEFAULT NOW(),
+   	count_likes BIGINT unsigned NULL
 
     -- PRIMARY KEY (user_id, media_id) – можно было и так вместо id в качестве PK
   	-- слишком увлекаться индексами тоже опасно, рациональнее их добавлять по мере необходимости (напр., провисают по времени какие-то запросы)  
@@ -138,7 +139,8 @@ CREATE TABLE `photos` (
 	id SERIAL,
 	`album_id` BIGINT unsigned NULL,
 	`media_id` BIGINT unsigned NOT NULL,
-
+	`status_like` ENUM('like', 'dislike', 'null'),
+	
 	FOREIGN KEY (album_id) REFERENCES photo_albums(id),
     FOREIGN KEY (media_id) REFERENCES media(id)
 );
