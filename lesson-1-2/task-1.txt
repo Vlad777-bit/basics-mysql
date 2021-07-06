@@ -1,6 +1,0 @@
-Откройте ваш любимый редактор или создаете файл в терминале.
-
-touch ~/ex.cnf | echo '[client]
-user=root 
-password=123' > ex.cnf
-
